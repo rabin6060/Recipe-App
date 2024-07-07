@@ -115,7 +115,7 @@ const RecipeDetail = () => {
        if (error.response) {
         setError(error.response.data)
         setTrackComment(false)
-        toast.error(error.response.data.message,{className:'bg-red-500 text-black'})
+        toast.error(error.response.data.message)
       }
      }
     }
@@ -138,7 +138,7 @@ const RecipeDetail = () => {
        if (error.response) {
         setError(error.response.data)
         setTrackRating(false)
-        toast.error(error.response.data.message,{className:'bg-red-500 text-black'})
+        toast.error(error.response.data.message)
       }
      }
     }
