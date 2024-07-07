@@ -13,11 +13,6 @@ import axios from "axios";
 import { create, deleteComment } from "@/api/comment";
 import { useRecipe } from "@/Context/RecipeContext";
 import { MdDelete } from "react-icons/md";
-import { io, Socket } from 'socket.io-client'
-import { notification, useNotification } from "@/Context/Notification";
-import { useUser } from "@/Context/UserContext";
-
-
 
 const RecipeDetail = () => {
   const [stars, setStars] = useState(0);
@@ -29,27 +24,7 @@ const RecipeDetail = () => {
   const { id } = useParams();
   const {setLoading,setRecipe,recipe} = useRecipe()
   const formData = {...FormData,rating:stars,type:"rating"}
-  const {setNotifications} = useNotification()
-  const [_socket,setSocket] = useState<Socket | null>(null)
-  const [notification,setNotification] = useState<notification[]>([])
-
-  const {user} = useUser()
-  const userId = user && user.data._id
-   setNotifications(notification)
-   useEffect(() => {
-    const newSocket = io('http://localhost:7000'); 
-    setSocket(newSocket);
-    newSocket.emit('register', userId);
-    newSocket.on('notification', (notification) => {
-      setNotification((prev) => {
-        return [...prev , notification]
-      })
-      });
   
-    return () => {
-      newSocket.close();
-    };
-  }, []);
 
   const totalRating =recipe && recipe?.ratings.reduce(
     (total, current) => total + +current.rating,
