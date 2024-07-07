@@ -11,6 +11,7 @@ export interface User {
   accessToken?: string;
   profilePic?: string;
   friends?: ObjectId[];
+  favourites?:ObjectId[];
 }
 
 export const userPrivateFields = ['password', '__v', 'createdAt', 'updatedAt'];
@@ -55,6 +56,13 @@ const userSchema = new Schema<UserDocument>(
       {
         type: mongoose.Types.ObjectId,
         ref: 'User',
+        required: false,
+      },
+    ],
+    favourites: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: 'recipe',
         required: false,
       },
     ],

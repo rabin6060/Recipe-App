@@ -16,7 +16,7 @@ export const getUserByEmail = (email: string) => {
 };
 
 export const updateUserWithToken = async(email: string, accessToken: string)=> {
-    const user = await getUserByEmail(email).select('-password -__v -createdAt -updatedAt -verificationAttempt')
+    const user = await getUserByEmail(email).populate("favourites").select('-password -__v -createdAt -updatedAt -verificationAttempt')
     if (!user) {
       throw new Error('User not found');
     }
@@ -29,11 +29,11 @@ export const updateUserWithToken = async(email: string, accessToken: string)=> {
 
 
 export const getUserByEmailForAuth = (email: string) => {
-  return UserModel.findOne({ email: email })
+  return UserModel.findOne({ email: email }).populate("favourites")
 };
 
 export const getUserByCodeOk = (id: string) => {
-  return UserModel.findById(id);
+  return UserModel.findById(id)
 };
 export const updateUser = (email: string) => {
   return UserModel.findOneAndUpdate({ email: email },{$unset:{
@@ -45,11 +45,20 @@ export const removeFollower = (id:string,body:UpdatedBody) =>{
     id,
     { $pull: { friends: body.friend } },
     { new: true }
-  )
+  ).populate("favourites")
+} 
+export const removeFavourite = (id:string,body:UpdatedBody) =>{
+  console.log(id)
+  return UserModel.findByIdAndUpdate(
+    id,
+    { $pull: { favourites: body.favourite } },
+    { new: true }
+  ).populate("favourites")
 } 
 
+
 export const updateUserById =async (id:string,body:UpdatedBody)=>{
-  const {username,profilePic,friend} = body
+  const {username,profilePic,friend,favourite} = body
    if (friend) {
     return await UserModel.findByIdAndUpdate(
       id,
@@ -58,7 +67,16 @@ export const updateUserById =async (id:string,body:UpdatedBody)=>{
         profilePic:profilePic
         }, $addToSet: { friends: friend } },
       { new: true }
-    )
+    ).populate("favourites")
+  }else if(favourite){
+    return await UserModel.findByIdAndUpdate(
+      id,
+      { $set: {
+        username:username,
+        profilePic:profilePic
+        }, $addToSet: { favourites: favourite } },
+      { new: true }
+    ).populate("favourites")
   } else {
     return await UserModel.findByIdAndUpdate(
       id,
@@ -67,7 +85,7 @@ export const updateUserById =async (id:string,body:UpdatedBody)=>{
         profilePic:profilePic
         } },
       { new: true }
-    );
+    ).populate("favourites")
   }
 }
 export const deleteUserByEmail = (email: string) => {
@@ -82,5 +100,5 @@ export const getUserAndUpdateRefreshToken = (id:string) => {
 }
 
 export const getUserById = (id: string) => {
-  return UserModel.findById(id);
+  return UserModel.findById(id)
 };

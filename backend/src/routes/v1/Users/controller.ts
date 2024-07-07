@@ -117,15 +117,18 @@ const UserController = {
     try {
       const { id } = req.params;
       const user = res.locals.user;
-      const { username, friend } = req.body;
+      const { username, friend ,favourite} = req.body;
       const profile = req.files as Express.Multer.File[];
       const urls = await UserService.uploadProfile(profile);
       const profilePicUrl = urls && urls[0];
-      if (id !== user._id) {
-        throw new CustomError('you are not authorized!!!', 403);
-      }
+      if (!user || id!==user._id) {
+             return errorResponse({
+                        response: res,
+                        message: 'unauthorized user!!!',
+                    });
+        }
 
-      const result = await UserService.updateUser(id, { username: username, profilePic: profilePicUrl, friend: friend });
+      const result = await UserService.updateUser(id, { username: username, profilePic: profilePicUrl, friend: friend,favourite:favourite });
 
       if (!result) {
         return errorResponse({

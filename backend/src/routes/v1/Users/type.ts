@@ -13,5 +13,6 @@ export interface Body{
 export interface UpdatedBody{
     username?:string,
     profilePic?:string | undefined,
-    friend?:ObjectId
+    friend?:ObjectId | undefined,
+    favourite?:ObjectId
 }

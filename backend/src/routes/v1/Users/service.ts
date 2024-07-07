@@ -3,7 +3,7 @@ import { sendMessageToUser } from '../../../..';
 import cloudinary from '../../../utils/Cloudinary';
 import { create } from '../Notification/repository';
 import { User } from './model';
-import { createUserRepo, deleteUserByEmail, getAllUsers, getUserAndUpdateRefreshToken, getUserByCodeOk, getUserByEmail, removeFollower, updateUser, updateUserById, updateUserWithToken } from './repository';
+import { createUserRepo, deleteUserByEmail, getAllUsers, getUserAndUpdateRefreshToken, getUserByCodeOk, getUserByEmail ,removeFavourite,removeFollower, updateUser, updateUserById, updateUserWithToken } from './repository';
 import { UpdatedBody } from './type';
 
 const UserService = {
@@ -30,24 +30,30 @@ const UserService = {
   //updating user info
   async updateUser(id:string,body:UpdatedBody){
     const user = await this.getUserById(id)
-    const friend:string =body.friend && body.friend.toString() || ""
+    const friend:string | undefined = body && body?.friend && body?.friend.toString()
+    console.log(body.favourite,user?.favourites && body.favourite && user.favourites[0])
     if(user && body.friend && user.friends?.includes(body.friend)){
       const res=await removeFollower(id,body)
-      if (res) {
-        const message ={ username:user.username,userId:body.friend,time:new Date( Date.now()).toISOString(),content:`${user?.username} has unfollowed you.`}
+      if (res && friend) {
+        const message ={ username:user.username,userId:body.friend || "",time:new Date( Date.now()).toISOString(),content:`${user?.username} has unfollowed you.`}
         await create(message)
         sendMessageToUser(friend, message);
       }
       return res
-    }else{
+    }else if(user && body.favourite && user.favourites?.includes(body.favourite)){
+      console.log(body.favourite,user.favourites?.includes(body.favourite))
+      return removeFavourite(id,body)
+    }
+    else{
       const res = await updateUserById(id,body)
-      if (res) {
+      if (res && friend) {
         const message ={ username:user && user?.username || "",userId:body.friend || "",time:new Date( Date.now()).toISOString(),content:`${user?.username} started following you.`}
         await create(message)
         sendMessageToUser(friend, message);
       }
       return res
     }
+
     
   },
   getUsers() {
