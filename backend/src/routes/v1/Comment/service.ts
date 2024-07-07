@@ -18,6 +18,7 @@ export const CommentService = {
     return comment;
   },
   async createRating(body:Review,recipeId:string){
+    
     const rating = await create(body);
     const friend = body && body.userId?.toString() || ""
     if (rating) {
@@ -79,7 +80,6 @@ export const CommentService = {
     }
 
     const deleteCommens = await deleteRating(id, recipeId);
-    console.log(deleteCommens);
     if (!deleteCommens) {
       throw new CustomError('not deleted!!!', 400);
     }

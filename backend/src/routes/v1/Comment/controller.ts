@@ -5,6 +5,7 @@ import { errorResponse, successResponse } from '../../../utils/HttpResponse';
 import { getSingleRecipe } from '../Recipe/repository';
 
 
+
 export const CommentController = {
   async create(req: Request<{recipeId:string}, unknown, Review>, res: Response) {
     try {
@@ -55,7 +56,12 @@ export const CommentController = {
                     type: "rating",
                     username:user.username
                 };
-
+                if (req.body.rating && (+req.body?.rating>5 || +req.body.rating<1)) {
+                   return errorResponse({
+                        response: res,
+                        message: 'Rating must be in-between 1-5!!!',
+                    });
+                }
                 const newRating = await CommentService.createRating(rating,recipeId);
 
                 if (newRating===undefined) {

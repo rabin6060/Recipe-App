@@ -5,6 +5,9 @@ export const create = (body: Review) => {
   return CommentModel.create(body);
 };
 
+export const getRatings = (body:Review)=>{
+  return CommentModel.find({userId:body.userId,type:body.type})
+}
 
 export const getComment = (id: string) => {
   return CommentModel.findById(id);
