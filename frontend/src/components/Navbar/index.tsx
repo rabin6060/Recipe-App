@@ -105,7 +105,7 @@ const Navbar = () => {
                   setShow(false)
                   }}
               />
-              <div className="w-[22px] h-[22px] bg-red-500 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black font-semibold absolute -top-3 -right-2">
+              <div className="w-[24px] h-[24px] text-sm bg-red-500 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black font-semibold absolute -top-3 -right-2">
                 2
               </div>
             </div>
@@ -119,7 +119,7 @@ const Navbar = () => {
                    setChat(false)
                    }}
               />
-              <div className="w-[22px] h-[22px] bg-red-500 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black font-semibold absolute -top-3 -right-2">
+              <div className="w-[24px] h-[24px] bg-red-500 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black font-semibold text-sm absolute -top-3 -right-2">
                 {notifications?.length || 0}
               </div>
             </div>
