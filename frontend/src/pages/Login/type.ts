@@ -7,7 +7,8 @@ export interface UserInfo{
         email:string,
         accessToken:string,
         profilePic:string,
-        friends:string[]
+        friends:string[],
+        favourites:RecipeData[]
 }
 }
 export interface AllUserInfo{
