@@ -18,15 +18,14 @@ import { notification, useNotification } from "@/Context/Notification";
 
 const Navbar = () => {
   const [_error, setError] = useState<Error | null>(null);
-  const [notification, setNotification] = useState<boolean>(false);
   const [chat, setChat] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
+  const [notification,setNotification] = useState<boolean>(false)
   const { user, setUser } = useUser();
   const navigate = useNavigate();
- // const [notifications, setNotifications] = useState<notification[]>([]);
-
+  
   const {notifications,setNotifications} = useNotification()
-
+  const sortNotification = notifications.sort((a,b)=>(new Date(b.time).getTime()) - (new Date(a.time).getTime()))
   const handleLogout = async () => {
     try {
       await logout(user?.data?._id);
@@ -43,20 +42,8 @@ const Navbar = () => {
       }
     }
   };
+   
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const res = await get();
-      //  setNotifications(res.data.data || []);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchNotifications();
-  }, [user]);
-
-  console.log(notifications)
   return (
     <section className="h-auto w-full shadow-lg fixed top-0 z-50 bg-white dark:bg-black">
       <div className="max-w-[75%] mx-auto relative h-full py-3 flex items-center justify-between border-b-[1px] dark:border-white">
@@ -69,18 +56,18 @@ const Navbar = () => {
         </div>
 
         <div
-          className={`h-[90vh] w-1/4 border rounded-lg absolute top-20 right-0 bg-white z-50 transition-transform duration-300 ease-linear p-2 space-y-2 dark:bg-slate-50 transform ${
+          className={`h-[90vh] w-1/4 border rounded-lg absolute top-20 right-0 bg-white z-50 transition-transform duration-300 ease-linear p-2 overflow-y-auto overflow-hidden space-y-2 dark:bg-slate-50 transform ${
             notification
               ? "translate-x-0 opacity-100"
               : "translate-x-full opacity-0"
           }`}
         >
-          <h3 className="text-2xl hover:scale-[1.01] transition-all duration-100 linear cursor-pointer">
+          <h3 className="text-2xl hover:scale-[1.01] transition-all duration-100 linear cursor-pointer ">
             Notifications
           </h3>
-          <div className="flex flex-col gap-2">
-            {notifications &&
-              notifications.map((notification) => (
+          <div className="flex flex-col gap-2 pb-5 h-full">
+            {sortNotification &&
+              sortNotification.map((notification) => (
                 <div className="p-2 flex gap-5 cursor-pointer rounded-lg shadow-md">
                   <Avatars />
                   <div className="w-[90%] flex flex-col">
@@ -111,10 +98,9 @@ const Navbar = () => {
         <div className="flex gap-5">
           <div className="flex items-center justify-center gap-4">
             <div className={`relative w-full ${user ? "flex" : "hidden"}`}>
-              <FaRegUser
-                id="bell"
-                className="text-2xl cursor-pointer bg-transparent dark:text-white hover:scale-110 transition-all duration-200 linear"
-                onClick={() => setNotification((prev) => !prev)}
+              <IoChatbubblesOutline
+                className="text-3xl cursor-pointer bg-transparent dark:text-white hover:scale-110 transition-all duration-200 linear"
+                onClick={() => setChat((prev) => !prev)}
               />
               <div className="w-[22px] h-[22px] bg-red-500 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black font-semibold absolute -top-3 -right-2">
                 2
@@ -130,15 +116,7 @@ const Navbar = () => {
                 {notifications?.length || 0}
               </div>
             </div>
-            <div className={`relative w-full ${user ? "flex" : "hidden"}`}>
-              <IoChatbubblesOutline
-                className="text-3xl cursor-pointer bg-transparent dark:text-white hover:scale-110 transition-all duration-200 linear"
-                onClick={() => setChat((prev) => !prev)}
-              />
-              <div className="w-[22px] h-[22px] bg-red-500 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black font-semibold absolute -top-3 -right-2">
-                2
-              </div>
-            </div>
+            
           </div>
           {!user ? (
             <div className="flex items-center justify-center gap-3">
