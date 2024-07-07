@@ -13,12 +13,18 @@ import { BsPersonCheckFill } from "react-icons/bs";
 import { editProfile } from "@/api/user";
 import { FaEdit } from "react-icons/fa";
 import { toast } from "sonner";
-import { io } from 'socket.io-client'
-import { notification, useNotification } from "@/Context/Notification";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { AllUserInfo } from "../Login/type";
 
 
+type UserInfo = {
+  _id: string;
+  username: string;
+  email: string;
+  accessToken: string;
+  profilePic: string;
+  friends: string[];
+  pin?: string; 
+};
 
 const Home = () => {
   const navigate = useNavigate()
@@ -27,14 +33,12 @@ const Home = () => {
   const [show,setShow] = useState<boolean>(false)
   const [isDeleted,setDeleted] = useState<boolean>(false)
   const [trackRecipe,setTrackRecipe] = useState<string>("")
-  const [notification,setNotification] = useState<notification[]>([])
-  const {setNotifications,setSocket} = useNotification()
-  setNotifications(notification)
+  const {recipes,setRecipes} = useRecipe()
+
+
   let friendsAndMe:string[] = []
   
-  const {recipes,setRecipes} = useRecipe()
-  const verifiedUsers:AllUserInfo["data"] | [] =users &&  users?.data.filter(user=>!('pin' in user)) || []
-  console.log(verifiedUsers)
+  const verifiedUsers:UserInfo[] | null =users && users.data &&  users?.data.filter(user=>!('pin' in user))
   const handleDelete = async (id:string) => {
     setDeleted(false)
     try {
@@ -78,20 +82,7 @@ const Home = () => {
       }
   },[userId,isDeleted,user])
 
-  useEffect(() => {
-    const newSocket = io('http://localhost:7000'); 
-    setSocket(newSocket);
-    newSocket.emit('register', userId);
-    newSocket.on('notification', (notification) => {
-      setNotification((prev) => {
-        return [...prev , notification]
-      })
-      });
-  
-    return () => {
-      newSocket.close();
-    };
-  }, [setNotification]);
+ 
   return (
     <section className="h-auto">
       <div className="flex h-full gap-5">
