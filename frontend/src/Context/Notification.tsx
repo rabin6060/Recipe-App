@@ -1,6 +1,6 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Socket } from 'socket.io-client';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { io, Socket } from 'socket.io-client';
 
 export interface notification{
   username:string
@@ -13,8 +13,8 @@ interface NotificationContextType {
   
   loading: boolean | false;
   setLoading:(recipe: boolean | false) => void;
-  notifications: notification[] | null;
-  setNotifications: (notifications: notification[]) => void;
+  notifications: notification[] | [];
+  setNotifications: (notifications: notification[] | []) => void;
   socket:Socket | null;
   setSocket:(socket:Socket)=>void
 }
@@ -23,13 +23,26 @@ interface NotificationContextType {
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
 // Create a provider component
-const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+const NotificationProvider: React.FC<{ children: ReactNode,url:string,userId:string }> = ({ children,url,userId }) => {
   
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [notifications,setNotifications] = useState<notification[] | null>(null)
+  const [notifications,setNotifications] = useState<notification[] | []>([])
   const [socket,setSocket] = useState<Socket | null>(null)
-  
+  useEffect(() => {
+    const newSocket = io(url);
+    setSocket(newSocket);
+
+    newSocket.emit('register', userId);
+
+    newSocket.on('notification', (notification) => {
+      setNotifications((prev) => [...prev, notification]);
+    });
+
+    return () => {
+      newSocket.close();
+    };
+  }, [url, userId]);
   
   
 
