@@ -3,18 +3,17 @@ import { SiFoodpanda } from "react-icons/si";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoChatbubblesOutline, IoSend } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatars } from "../Avatar";
 import { Input } from "../ui/input";
-import { FaRegUser } from "react-icons/fa6";
 import { useUser } from "@/Context/UserContext";
 import { logout } from "@/api/user";
 import axios from "axios";
 
 import { format } from "date-fns";
-import { get } from "@/api/notification";
-import { notification, useNotification } from "@/Context/Notification";
+
+import {  useNotification } from "@/Context/Notification";
 
 const Navbar = () => {
   const [_error, setError] = useState<Error | null>(null);
