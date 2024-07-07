@@ -30,11 +30,7 @@ const EmojiInput: React.FC<EmojiInputProps> = ({recipeId,setTrackComment}) => {
     try {
       setTrackComment(false)
       setError(null)
-      const response = await create(recipeId,formData)
-      if (response.status===401) {
-        
-        toast.error("failed!!!",{className:'bg-red-500 text-black'})
-      }
+      await create(recipeId,formData)
       setError(null)
       setInputValue('')
       setTrackComment(true)
@@ -48,7 +44,7 @@ const EmojiInput: React.FC<EmojiInputProps> = ({recipeId,setTrackComment}) => {
        if (error.response) {
         
         setError(error.response.data)
-        toast.error(" Failed!!!",{className:'bg-red-500 text-black'})
+        toast.error(error.response.data.message)
       }
      }
     }
