@@ -99,7 +99,11 @@ const Navbar = () => {
             <div className={`relative w-full ${user ? "flex" : "hidden"}`}>
               <IoChatbubblesOutline
                 className="text-3xl cursor-pointer bg-transparent dark:text-white hover:scale-110 transition-all duration-200 linear"
-                onClick={() => setChat((prev) => !prev)}
+                onClick={() => {
+                  setChat((prev) => !prev)
+                  setNotification(false)
+                  setShow(false)
+                  }}
               />
               <div className="w-[22px] h-[22px] bg-red-500 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black font-semibold absolute -top-3 -right-2">
                 2
@@ -109,7 +113,11 @@ const Navbar = () => {
               <IoMdNotificationsOutline
                 id="bell"
                 className={`text-3xl cursor-pointer bg-transparent dark:text-white hover:scale-110 transition-all duration-200 linear`}
-                onClick={() => setNotification((prev) => !prev)}
+                onClick={() =>{
+                   setNotification((prev) => !prev)
+                   setShow(false)
+                   setChat(false)
+                   }}
               />
               <div className="w-[22px] h-[22px] bg-red-500 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black font-semibold absolute -top-3 -right-2">
                 {notifications?.length || 0}
@@ -133,7 +141,11 @@ const Navbar = () => {
             <>
               <div
                 className="flex items-center justify-center gap-2 capitalize text-xl font-semibold cursor-pointer  "
-                onClick={() => setShow((prev) => !prev)}
+                onClick={() =>{ 
+                  setShow((prev) => !prev)
+                  setChat(false)
+                  setNotification(false)
+                  }}
               >
                 <div className="hover:scale-[1.03] transition-all duration-200">
                   {user && user?.data?.username}
