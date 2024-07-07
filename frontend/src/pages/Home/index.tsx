@@ -14,7 +14,9 @@ import { editProfile } from "@/api/user";
 import { FaEdit } from "react-icons/fa";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-
+import { FaHeart } from "react-icons/fa";
+import { unknown } from "zod";
+import axios from "axios";
 
 type UserInfo = {
   _id: string;
@@ -34,7 +36,7 @@ const Home = () => {
   const [isDeleted,setDeleted] = useState<boolean>(false)
   const [trackRecipe,setTrackRecipe] = useState<string>("")
   const {recipes,setRecipes} = useRecipe()
-
+  
 
   let friendsAndMe:string[] = []
   
@@ -58,10 +60,15 @@ const Home = () => {
       const res = await editProfile(user?.data._id,formData)
       localStorage.setItem('user',JSON.stringify(res.data))
       setUser(res.data)
-    } catch (error) {
-      console.log(error)
+    }  catch (error:unknown) {
+     if (axios.isAxiosError(error)) {
+       if (error.response) {
+        toast.error(error.response.data.message)
+      }
+     }
     }
-  }
+    }
+  
   const handleShow = (id:string,recipeId:string) => {
       setTrackRecipe(recipeId)
       user?.data._id===id ? setShow(prev=>!prev) : toast.error("you are not authorized user to preform action on this post")
@@ -87,9 +94,10 @@ const Home = () => {
     <section className="h-auto">
       <div className="flex h-full gap-5">
         {/* Sidebar */}
-        <div className="w-1/5 h-1/2 rounded-lg p-2 space-y-2">
+        <div className="w-1/5 h-1/2 rounded-lg p-2 space-y-4">
+          <>
           <h3 className="text-xl text-slate-500">Follow Friends</h3>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 h-[35vh] overflow-y-auto rounded-lg">
             {verifiedUsers && verifiedUsers?.filter(u=>u?._id!==user?.data?._id).map((friend, index) => (
                <div key={index} className={`flex items-center justify-between border-b rounded-md cursor-pointer gap-2 p-1   ${!user?.data.friends.includes(friend._id) ? 'flex':'hidden'}`}>
                 <div className="flex items-center gap-2 p-1">
@@ -113,6 +121,19 @@ const Home = () => {
               </div>
             ))}
           </div>
+          </>
+          
+          <h3 className="text-xl text-slate-500 flex items-center group justify-between border p-2 py-3 rounded-lg cursor-pointer hover:shadow-sm">
+            <span className="group-hover:scale-[1.07] transition-all duration-200 ease-linear">My Recipes </span>
+            <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yb/r/eECk3ceTaHJ.png" alt="feed" className="group-hover:scale-[1.07] transition-all duration-200 ease-linear" />
+          </h3>
+          
+            <h3 onClick={()=>navigate('favourites')} className="text-xl text-slate-500 group flex items-center justify-between border p-2 py-4 rounded-lg cursor-pointer hover:shadow-sm">
+              <span className="group-hover:scale-[1.07] transition-all duration-200 ease-linear">My Favourites </span>
+              <FaHeart className="text-red-500 group-hover:scale-[1.07] transition-all duration-200 ease-linear" size={25}/>
+            </h3>
+         
+          
         </div>
 
         {/* Posts Section (Scrollable) */}
