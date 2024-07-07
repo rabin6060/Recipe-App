@@ -13,6 +13,12 @@ export const CommentController = {
         const user = res.locals.user;
         const response = await getSingleRecipe(recipeId)
         const friend:string =response && response.userId && response?.userId.toString() || ""
+        if (!user) {
+             return errorResponse({
+                        response: res,
+                        message: 'unauthorized user!!!',
+                    });
+        }
         // Determine if we are dealing with a comment or rating
         if (req.body.type === 'comment' && response) {
             if (req.body.content && req.body.content.length > 1) {
