@@ -26,7 +26,7 @@ export const ActivityController = {
     async get(req:Request,res:Response,next:NextFunction){
       try {
         const user = res.locals.user
-        const Activities = await ActivityService.getActivities(user._id);
+        const Activities = await ActivityService.getNotification(user._id);
       return successResponse({
         response: res,
         message: 'Activities fetched successfully!!',

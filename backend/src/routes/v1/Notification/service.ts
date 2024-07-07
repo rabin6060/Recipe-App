@@ -9,8 +9,8 @@ export const ActivityService={
     getSingleActivity(taskId:ObjectId){
         return getActivity(taskId)
     },
-    getActivities(id:string){
-        return getAll(id)
+    getNotification(id:string){
+        return getAll(id).sort({createdAt:-1})
     },
 
 }
