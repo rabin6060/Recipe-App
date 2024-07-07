@@ -10,7 +10,7 @@ import { getSingleRecipe } from "@/api/recipe";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import axios from "axios";
-import { create, deleteComment } from "@/api/comment";
+import { create, delete_Comment_Rating } from "@/api/comment";
 import { useRecipe } from "@/Context/RecipeContext";
 import { MdDelete } from "react-icons/md";
 
@@ -98,11 +98,11 @@ const RecipeDetail = () => {
     fetch();
   }, [id,trackRating,trackComment]);
 
-  const handleDelete =async (id:string)=>{
+  const handleDeleteComment =async (id:string)=>{
     try {
       setTrackComment(false)
       setError(null)
-      const response = await deleteComment(recipe?._id,id)
+      const response = await delete_Comment_Rating(recipe?._id,id)
       if (!response) {
         setLoading(false)
       }
@@ -121,6 +121,28 @@ const RecipeDetail = () => {
     }
   }
   
+  const handleDeleteRating =async (id:string)=>{
+    try {
+      setTrackRating(false)
+      setError(null)
+      const response = await delete_Comment_Rating(recipe?._id,id)
+      if (!response) {
+        setLoading(false)
+      }
+      setError(null)
+      setTrackRating(true)
+      toast.success("rating deleted SuccessFull!!!")
+      
+    } catch (error:unknown) {
+     if (axios.isAxiosError(error)) {
+       if (error.response) {
+        setError(error.response.data)
+        setTrackRating(false)
+        toast.error(error.response.data.message,{className:'bg-red-500 text-black'})
+      }
+     }
+    }
+  }
   return (
     <section className="h-auto rounded-lg p-2 my-2">
       {recipe && <div className="w-full h-full space-y-10">
@@ -289,6 +311,9 @@ const RecipeDetail = () => {
                     </div>
                     <span className="text-slate-500 text-xs">{format(new Date(rating?.createdAt), 'MMMM d, yyyy h:mm a')}</span>
                   </div>
+                  <div>
+                      <MdDelete size={25} className="text-red-500" onClick={()=>handleDeleteRating(rating._id)} />
+                    </div>
                 </div>
               ))}
             </div>
@@ -314,7 +339,7 @@ const RecipeDetail = () => {
                       </p>
                     </div>
                     <div>
-                      <MdDelete size={25} className="text-red-500" onClick={()=>handleDelete(comment._id)} />
+                      <MdDelete size={25} className="text-red-500" onClick={()=>handleDeleteComment(comment._id)} />
                     </div>
                 </div>
                 ))
