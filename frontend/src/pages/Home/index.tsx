@@ -15,7 +15,6 @@ import { FaEdit } from "react-icons/fa";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { FaHeart } from "react-icons/fa";
-import { unknown } from "zod";
 import axios from "axios";
 
 type UserInfo = {
