@@ -80,7 +80,7 @@ const RecipeDetail = () => {
         setError(error.response.data)
         setTrackRating(false)
         setStars(0)
-        toast.error("you must logged in!!!",{className:'bg-red-500 text-black'})
+        toast.error(error.response.data.message,{className:'bg-red-500 text-black'})
       }
      }
     }

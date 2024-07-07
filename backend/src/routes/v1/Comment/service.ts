@@ -3,6 +3,7 @@ import {  Review, UpdatedReview } from './type';
 import { addCommentToRecipe, addRatingToRecipe, getSingleRecipe, removeCommentFromRecipe, removeRatingFromRecipe } from '../Recipe/repository';
 import CustomError from '../../../utils/Error';
 import { sendMessageToUser } from '../../../..';
+import { ActivityService } from '../Notification/service';
 
 export const CommentService = {
   async createComment(body: Review, recipeId: string) {
@@ -10,7 +11,7 @@ export const CommentService = {
     const friend = body && body.userId?.toString() || ""
     if (comment) {
         const message ={ username:body.username ?? "",userId:body.userId ?? "",time:new Date( Date.now()).toISOString(),content:`${body?.username} commented on your post`}
-      //  await create(message)
+        await ActivityService.createActivity(message)
         sendMessageToUser(friend, message);
       }
     addCommentToRecipe(recipeId, comment._id.toString());
@@ -20,8 +21,8 @@ export const CommentService = {
     const rating = await create(body);
     const friend = body && body.userId?.toString() || ""
     if (rating) {
-        const message ={ username:body.username ?? "",userId:body.userId ?? "",time:new Date( Date.now()).toISOString(),content:`${body?.username} commented on your post`}
-      //  await create(message)
+        const message ={ username:body.username ?? "",userId:body.userId ?? "",time:new Date( Date.now()).toISOString(),content:`${body?.username} rate your recipe`}
+        await ActivityService.createActivity(message)
         sendMessageToUser(friend, message);
       }
     addRatingToRecipe(recipeId, rating._id.toString());

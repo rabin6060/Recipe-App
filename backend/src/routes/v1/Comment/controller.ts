@@ -11,10 +11,11 @@ export const CommentController = {
         const { recipeId } = req.params;
         const user = res.locals.user;
         const response = await getSingleRecipe(recipeId)
+        const friend:string =response && response.userId && response?.userId.toString() || ""
         // Determine if we are dealing with a comment or rating
         if (req.body.type === 'comment' && response) {
             if (req.body.content && req.body.content.length > 1) {
-                const friend:string = response.userId && response?.userId.toString() || ""
+               
                 const comment = {
                     ...req.body,
                     recipeId: recipeId,
@@ -49,9 +50,10 @@ export const CommentController = {
                 const rating = {
                     ...req.body,
                     recipeId: recipeId,
-                    userId: user._id,
+                    userId: friend,
                     user: user.username,
-                    type: "rating"
+                    type: "rating",
+                    username:user.username
                 };
 
                 const newRating = await CommentService.createRating(rating,recipeId);
