@@ -1,4 +1,5 @@
 
+import { get } from '@/api/notification';
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 
@@ -29,13 +30,25 @@ const NotificationProvider: React.FC<{ children: ReactNode,url:string,userId:str
 
   const [notifications,setNotifications] = useState<notification[] | []>([])
   const [socket,setSocket] = useState<Socket | null>(null)
-  useEffect(() => {
+    useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await get();
+        setNotifications(res.data.data || []);
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchNotifications();
+
     const newSocket = io(url);
     setSocket(newSocket);
 
     newSocket.emit('register', userId);
 
-    newSocket.on('notification', (notification) => {
+    newSocket.on('notification', (notification: notification) => {
       setNotifications((prev) => [...prev, notification]);
     });
 
