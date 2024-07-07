@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +20,10 @@ import { Input } from "@/components/ui/input";
 import { CiClock2 } from "react-icons/ci";
 import { getAllRecipe } from "@/api/recipe";
 import { Skeleton } from "@/components/ui/skeleton";
+import { editProfile } from "@/api/user";
+import { useUser } from "@/Context/UserContext";
+import axios from "axios";
+import { toast } from "sonner";
 
 const items = [
   {
@@ -48,8 +52,7 @@ const Recipe = () => {
   const [hasMore, setHasMore] = useState(true);
   const limit = 6;
   const [page, setPage] = useState<number>(1);
-  const [like, setLike] = useState<boolean>(false);
-  const navigate = useNavigate();
+  const {user,setUser} = useUser()
 
   const fetchMoreData = () => {
     setPage((prevPage) => {
@@ -108,6 +111,30 @@ const Recipe = () => {
     } catch (error) {
       setLoading(false);
       console.error(error);
+    }
+  }
+  const handleFavourite =async (id:string)=>{
+    const formData = new FormData()
+    formData.append('favourite',id)
+    try {
+      const isFavourite = user?.data?.favourites?.some((favourite) => favourite._id === id);
+
+    const res = await editProfile(user?.data._id, formData);
+
+    localStorage.setItem('user', JSON.stringify(res.data));
+    setUser(res.data);
+
+    if (isFavourite) {
+      toast.success("Removed from favourites");
+    } else {
+      toast.success("Added to favourites");
+    }
+    }  catch (error:unknown) {
+     if (axios.isAxiosError(error)) {
+       if (error.response) {
+        toast.error(error.response.data.message)
+      }
+     }
     }
   }
    
@@ -221,10 +248,13 @@ const Recipe = () => {
                     </div>
                     :  (allRecipes && allRecipes?.length>0) ?
                     allRecipes.map(recipe=>(
-                        <div key={recipe._id} onClick={()=>navigate(`/recipeDetail/${recipe._id}`)} className="w-[300px] h-[380px] rounded-md dark:bg-inherit dark:text-white  cursor-pointer shadow-md hover:shadow-lg relative overflow-hidden space-y-2 gap-2">
-                            <div className="w-full h-4/5 overflow-hidden cursor-pointer">
+                        <div key={recipe._id}  className="w-[300px] h-[380px] rounded-md dark:bg-inherit dark:text-white  cursor-pointer shadow-md hover:shadow-lg relative overflow-hidden space-y-2 gap-2">
+                          <Link to={`/recipeDetail/${recipe._id}`}>
+                           <div className="w-full h-4/5 overflow-hidden cursor-pointer">
                                     <img src={recipe.images[0]} alt="image" className="w-full h-full object-cover rounded-t-md hover:scale-110 transition-all 0.3s ease-linear" />
                             </div>
+                          </Link>
+                           
                             <div className=" w-auto bg-white p-2 rounded-full absolute top-2 left-2 flex gap-2">
                               <CiClock2 className="text-red-500 text-2xl font-bold" />
                               <span className="dark:text-black">{recipe.cookingPeriod}</span>
@@ -232,7 +262,7 @@ const Recipe = () => {
                             <div className="flex px-2">
                                 <div className="w-full flex items-center justify-between">
                                   <h1 className="text-lg  text-left">{recipe.title.toUpperCase()}</h1>
-                                  <FaHeart className={`${like?'text-red-500':""} text-2xl cursor-pointer ` } onClick={()=>setLike(prev=>!prev)}/>
+                                  <FaHeart size={27} type="button" onClick={() => handleFavourite(recipe._id)} className={`hover:text-red-500 hover:scale-[1.05] cursor-pointer z-40 transition-all duration-100 ease-linear ${user?.data?.favourites.some(fav => fav._id === recipe._id) ? 'text-red-500' : ''}`} />
                                 </div>
                             </div>
                             <h3 className="px-2 text-md">Recipe by Chef {recipe?.userId?.username} </h3>
