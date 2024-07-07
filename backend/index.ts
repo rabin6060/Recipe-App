@@ -23,8 +23,8 @@ interface Users {
 const users: Users = {};
 
 // Function to emit message to a specific user
-const sendMessageToUser = (userId: string, message: {username:string,time:string,content:string}) => {
-  const socketId = users[userId];
+const sendMessageToUser = (userId: string | undefined, message: {username:string,time:string,content:string}) => {
+  const socketId = userId && users[userId];
   if (socketId) {
     io.to(socketId).emit('notification', message);
   }
