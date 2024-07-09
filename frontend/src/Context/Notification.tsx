@@ -9,15 +9,27 @@ export interface notification{
   content:string
   userId:string
 }
+
+export interface Chat{
+  toUserId:string,
+  fromUser:string,
+  fromUserId:string,
+  time:string,
+  content:string,
+  
+}
 // Define a type for the context value
-interface NotificationContextType {
+export interface NotificationContextType {
   
   loading: boolean | false;
   setLoading:(recipe: boolean | false) => void;
   notifications: notification[] | [];
   setNotifications: (notifications: notification[] | []) => void;
   socket:Socket | null;
-  setSocket:(socket:Socket)=>void
+  setSocket:(socket:Socket)=>void;
+  chats : Chat[] | [],
+  setChats: (chats: Chat[] | []) => void
+
 }
 
 // Create the context with a default value
@@ -29,6 +41,7 @@ const NotificationProvider: React.FC<{ children: ReactNode,url:string,userId:str
   const [loading, setLoading] = useState<boolean>(true);
 
   const [notifications,setNotifications] = useState<notification[] | []>([])
+  const [chats,setChats] = useState<Chat[] | []>([])
   const [socket,setSocket] = useState<Socket | null>(null)
     useEffect(() => {
     const fetchNotifications = async () => {
@@ -51,7 +64,10 @@ const NotificationProvider: React.FC<{ children: ReactNode,url:string,userId:str
     newSocket.on('notification', (notification: notification) => {
       setNotifications((prev) => [...prev, notification]);
     });
-
+    newSocket.on("chat",(chat)=>{
+      setChats((prev)=>[...prev,chat])
+    })
+    
     return () => {
       newSocket.close();
     };
@@ -59,7 +75,7 @@ const NotificationProvider: React.FC<{ children: ReactNode,url:string,userId:str
   
   
 
-  return <NotificationContext.Provider value={{ socket,setSocket ,loading,setLoading, notifications,setNotifications }}>{children}</NotificationContext.Provider>;
+  return <NotificationContext.Provider value={{ socket,setSocket,chats,setChats ,loading,setLoading, notifications,setNotifications }}>{children}</NotificationContext.Provider>;
 };
 
 // Create a custom hook to use the NotificationContext
