@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { ImCross } from "react-icons/im";
 
 type Substep = {
   title: string;
@@ -275,8 +276,9 @@ const Home = () => {
                       {instructions.map((instruction, index) => (
                         <div key={index} className='flex flex-col shadow-sm border rounded-lg p-2 relative'>
                           <div className="text-lg font-semibold">Step: <span className="font-normal">{instruction.step}</span></div>
-                          <div className="text-2xl text-red-500 absolute top-2 right-2 cursor-pointer"
-                          onClick={() => remove((index.toString()), 'instruction')}>X</div>
+                          
+                          <ImCross className="text-2xl text-red-500 absolute top-2 right-2 cursor-pointer pl-2"
+                          onClick={() => remove((index.toString()), 'instruction')}/>
                           <div>
                             
                             {instruction.substep.map((sub, subIndex) => (
@@ -315,8 +317,8 @@ const Home = () => {
                   {ingredients.length > 0 ? (
                     <div className="inline-flex flex-col gap-1">
                       {ingredients.map((ingredient, index) => (
-                        <div key={index} className='w-auto bg-slate-100 shadow-md flex justify-between px-2 py-1 rounded-full cursor-pointer mr-2' onClick={() => remove(ingredient, 'ingredient')}>
-                         {ingredient} <span className='text-red-500 '>x</span>
+                        <div key={index} className='w-auto bg-slate-100 shadow-md flex items-center justify-between gap-3 px-2 py-1 rounded-full cursor-pointer mr-2' onClick={() => remove(ingredient, 'ingredient')}>
+                         {ingredient} <ImCross className='text-red-500 '/>
                         </div>
                       ))}
                     </div>
@@ -339,10 +341,10 @@ const Home = () => {
                     <Button type="button" variant={"outline"} className='hover:shadow-md' onClick={() => handleAdd('category')}>Add Category</Button>
                   </div>
                   {categories.length > 0 ? (
-                    <div>
+                    <div className="inline-flex flex-col">
                       {categories.map((category, index) => (
-                        <div key={index} className='bg-slate-100 shadow-md inline px-2 py-1 rounded-full cursor-pointer mr-2' onClick={() => remove(category, 'category')}>
-                          {category} <span className='text-red-500'>x</span>
+                        <div key={index} className='bg-slate-100 shadow-md flex px-2 py-1 gap-3  items-center justify-between rounded-full cursor-pointer mr-2' onClick={() => remove(category, 'category')}>
+                          {category} <ImCross className='text-red-500 '/>
                         </div>
                       ))}
                     </div>
