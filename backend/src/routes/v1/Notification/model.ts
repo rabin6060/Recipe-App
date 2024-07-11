@@ -18,6 +18,11 @@ const notificationSchema = new mongoose.Schema<Activity>({
       type:mongoose.Schema.ObjectId,
       ref:'User',
       required:true
+    },
+    recipeId:{
+      type:mongoose.Schema.ObjectId,
+      ref:'recipe',
+      required:false
     }
 },{timestamps:true})
 

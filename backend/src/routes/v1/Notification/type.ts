@@ -5,4 +5,5 @@ export interface Activity{
     time:string
     content:string,
     userId:string | ObjectId
+    recipeId?:string
 }
