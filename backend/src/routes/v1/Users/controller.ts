@@ -118,9 +118,19 @@ const UserController = {
       const { id } = req.params;
       const user = res.locals.user;
       const { username, friend ,favourite} = req.body;
-      const profile = req.files as Express.Multer.File[];
-      const urls = await UserService.uploadProfile(profile);
-      const profilePicUrl = urls && urls[0];
+      const existingUser = await UserService.getUserById(id);
+    if (!existingUser) {
+      return errorResponse({
+        response: res,
+        message: 'User not found',
+      });
+    }
+      const profile = req.files as Express.Multer.File[]
+      const urls = profile ? await UserService.uploadProfile(profile) : null;
+    const profilePicUrl = urls && urls[0] ? urls[0] : existingUser.profilePic;
+
+    // Prepare the updated user data
+    
       if (!user || id!==user._id) {
              return errorResponse({
                         response: res,
