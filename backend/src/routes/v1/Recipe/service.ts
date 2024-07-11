@@ -1,8 +1,9 @@
 
 import cloudinary from "../../../utils/Cloudinary";
-//import { create } from "../Notification/repository";
 import { createRecipes, deleteRecipe, getAllRecipes, getSingleRecipe, getUserRecipe, updateRecipe} from "./repository";
 import { Recipe } from "./type";
+import PDFDocument from 'pdfkit'
+
 
 
 export const RecipeService = {
@@ -55,5 +56,52 @@ export const RecipeService = {
         } catch (err) {
             console.error(err);
         }
-    }
+    },
+    async downloadRecipe(id: string){
+        const recipe = await getSingleRecipe(id)
+        const doc = new PDFDocument();
+        if (recipe) {
+        let buffers:any = [];
+        doc.on('data', buffers.push.bind(buffers));
+        
+
+        doc.fontSize(20).fillColor('blue').text(recipe.title, { align: 'center' });
+        doc.moveDown();
+
+        doc.fontSize(19).text('Desciption:')
+
+        doc.fontSize(18).text(recipe.desc);
+        doc.moveDown();
+
+        doc.fontSize(16).fillColor('green').text('Ingredients', { underline: true });
+        recipe.ingredients.forEach((ingredient) => {
+            doc.fontSize(14).text(`- ${ingredient}`);
+        });
+        doc.moveDown();
+
+        doc.fontSize(16).fillColor('orange').text('Categories', { underline: true });
+        recipe.categories.forEach((category) => {
+            doc.fontSize(14).text(`- ${category}`);
+        });
+        doc.moveDown();
+
+        doc.fontSize(16).fillColor('red').text('Instructions', { underline: true });
+        recipe.instructions.forEach((instruction, index) => {
+            doc.fontSize(15).text(`${index + 1}. ${instruction.step}`);
+            instruction.substep.forEach((sub) => {
+            doc.fontSize(13).text(`  - ${sub.title}: ${sub.desc}`);
+            });
+        });
+
+        doc.end();
+
+        return new Promise((resolve, reject) => {
+            doc.on('end', () => {
+            resolve(Buffer.concat(buffers));
+            });
+            doc.on('error', reject);
+        });
+                
+    }}
+
 }

@@ -10,6 +10,7 @@ interface MulterRequest extends Request {
   };
 }
 
+
 export const RecipeController = {
     async create(req:Request<unknown,unknown,Recipe>,res:Response,next:NextFunction){
       const reqFiles = req as MulterRequest;
@@ -85,48 +86,57 @@ export const RecipeController = {
         next(error)
       }
     },
-    async edit(req:Request<{id:string},unknown,Recipe>,res:Response,next:NextFunction){
-      const {id} = req.params
-      //const recipeData = req.body
-      
-      try {
-        const reqFiles = req as MulterRequest;
+    async edit(req: Request<{ id: string }, unknown, Recipe>, res: Response, next: NextFunction) {
+  const { id } = req.params;
 
-        const recipeData = req.body as Recipe;
-        if (!reqFiles.files || (!reqFiles.files['images'] && !reqFiles.files['videos'])) {
-            return res.status(400).json({ success: false, message: 'No files uploaded' });
-          }
+  try {
+    const reqFiles = req as MulterRequest;
+    const recipeData = req.body as Recipe;
 
-        const imageFiles = reqFiles.files['images'] || [];
-        const videoFiles = reqFiles.files['videos'] || [];
-        
-        
-        const urls = await RecipeService.uploadImages(imageFiles,videoFiles)
-        const videourl = urls?.pop()
-        const user = res.locals.user
-        
-        const newRecipeData = {...recipeData,userId:user._id,images:urls,video:videourl}
-        const recipe = await RecipeService.getRecipe(id)
-        if (!recipe) {
-          return next(new CustomError("sorry recipe not exist",404))
-        }
-        if (recipe && recipe.userId?.toString() !== user._id) {
-                return errorResponse({
-                    response: res,
-                    message: "unauthorizedd only user can update",
-                    status:403
-                })
-        }
-        const updated = await RecipeService.update(id,newRecipeData)
-             return successResponse({
-                    response: res,
-                    message: 'task updated successfully!!',
-                    data: updated,
-                });
-      }catch(error){
-        next(error)
-      }
-    },
+    // Fetch the existing recipe first
+    const recipe = await RecipeService.getRecipe(id);
+    if (!recipe) {
+      return next(new CustomError("sorry recipe not exist", 404));
+    }
+
+    // Check if the user is authorized to update the recipe
+    const user = res.locals.user;
+    if (recipe.userId?.toString() !== user._id) {
+      return errorResponse({
+        response: res,
+        message: "unauthorized only user can update",
+        status: 403,
+      });
+    }
+
+    // Safely check if req.files exists and access images and videos
+    const imageFiles = reqFiles.files && reqFiles.files['images'] ? reqFiles.files['images'] : [];
+    const videoFiles = reqFiles.files && reqFiles.files['videos'] ? reqFiles.files['videos'] : [];
+
+    // Upload new files if provided
+    const urls = req.files ? await RecipeService.uploadImages(imageFiles, videoFiles) : [];
+    const videourl =urls && urls.length > 0 ? urls.pop() : recipe.video;
+
+    // Prepare the new recipe data
+    const newRecipeData = {
+      ...recipeData,
+      userId: user._id,
+      images: req.files && imageFiles.length > 0 ? urls : recipe.images,
+      video: videourl,
+    };
+
+    // Update the recipe
+    const updated = await RecipeService.update(id, newRecipeData);
+    return successResponse({
+      response: res,
+      message: 'recipe updated successfully!!',
+      data: updated,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+,
     async delete(req:Request<{id:string},unknown,unknown>,res:Response,next:NextFunction){
       const {id} = req.params
       const user = res.locals.user
@@ -154,7 +164,6 @@ export const RecipeController = {
     },
     async getRecipeOfUser(req:Request<{userId:string},unknown,unknown>,res:Response,next:NextFunction){
       const {userId} = req.params
-      
       try {
         
         const recipe = await RecipeService.getUsersRecipe(userId)
@@ -173,7 +182,23 @@ export const RecipeController = {
       } catch (error) {
         next(error)
       }
-    }
-    
+    },
+    async downloadRecipe(req:Request<{id:string},unknown,unknown>,res:Response,next:NextFunction){
+         const { id } = req.params;
+        const recipe = await RecipeService.getRecipe(id);
+
+        if (!recipe) {
+          return res.status(404).json({ message: 'Recipe not found' });
+        }
+
+        const blob = await RecipeService.downloadRecipe(id);
+         if (!blob) {
+          return res.status(404).json({ message: 'Recipe not found' });
+        }
+      
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=${recipe.title}.pdf`);
+        res.send(blob);
+      } 
 }
    

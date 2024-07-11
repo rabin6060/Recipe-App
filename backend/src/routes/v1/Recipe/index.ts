@@ -13,6 +13,10 @@ RecipeRouter.route('/')
 RecipeRouter.route('/:userId/user')
   .get(RecipeController.getRecipeOfUser)
 
+
+RecipeRouter.route('/:id/download')
+  .get(RecipeController.downloadRecipe)
+
 RecipeRouter.route('/:id')
   .post(RecipeController.getSingleRecipe)
   .delete(requireUser,RecipeController.delete)
