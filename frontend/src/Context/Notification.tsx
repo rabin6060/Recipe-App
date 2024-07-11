@@ -8,6 +8,7 @@ export interface notification{
   time:string
   content:string
   userId:string
+  recipeId?:string
 }
 
 export interface Chat{
