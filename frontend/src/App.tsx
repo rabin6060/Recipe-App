@@ -13,10 +13,13 @@ import Profile from './pages/Profile'
 import EditRecipe from './pages/EditRecipe'
 import { Toaster } from './components/ui/sonner'
 import Protected from './components/ProtectedRoute'
+import Favourites from './pages/Favourites'
+import PageNotFound from './pages/PageNotFound'
+import MyRecipe from './pages/MyRecipes'
 
 function App() {
   return (
-    <div className="dark:bg-black">
+    <div className="dark:bg-black min-h-screen">
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <Routes>
           <Route path='/' element={<Layout/>}>
@@ -31,8 +34,10 @@ function App() {
               <Route path='createRecipe' element={<CreateRecipe/>} />
               <Route path='profile' element={<Profile/>} />
               <Route path='editRecipe/:id' element={<EditRecipe/>} />
+              <Route path='favourites' element={<Favourites/>} />
+              <Route path='myrecipes' element={<MyRecipe/>} />
             </Route>
-            
+            <Route path='*' element={<PageNotFound/>} />
           </Route>
         </Routes>
         <Toaster 
