@@ -53,7 +53,7 @@ const Profile = () => {
       setLoading(false)
       localStorage.setItem('user',JSON.stringify(response.data))
       setUser(response.data)
-      toast("User Updated SuccessFully")
+      toast.success("User Updated SuccessFully")
       
       setEdit(false)
     } catch (error:unknown) {
