@@ -8,7 +8,7 @@ interface RecipeData {
   images:string[] ,
   video:string,
   ingredients:string[],
-  categories:string[],
+  categories:string,
   instructions:Instruction[],
   comments:Comment[],
   ratings:Comment[],

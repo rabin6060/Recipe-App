@@ -93,17 +93,17 @@ const Home = () => {
     <section className="h-auto">
       <div className="flex h-full gap-5">
         {/* Sidebar */}
-        <div className="w-1/5 h-1/2 rounded-lg p-2 space-y-4">
+        <div className="w-1/5 h-1/2 rounded-lg p-2 space-y-4 border">
           <>
           <h3 className="text-xl text-slate-500">Follow Friends</h3>
-          <div className="flex flex-col gap-3 h-[35vh] overflow-y-auto rounded-lg">
+          <div className="flex flex-col gap-3 h-[35vh] overflow-y-auto rounded-lg border">
             {verifiedUsers && verifiedUsers?.filter(u=>u?._id!==user?.data?._id).map((friend, index) => (
-               <div key={index} className={`flex items-center justify-between border-b rounded-md cursor-pointer gap-2 p-1   ${!user?.data.friends.includes(friend._id) ? 'flex':'hidden'}`}>
+               <div key={index} className={`flex items-center justify-between border-b cursor-pointer gap-2 p-1   ${!user?.data.friends.includes(friend._id) ? 'flex':'hidden'}`}>
                 <div className="flex items-center gap-2 p-1">
                   <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
                       <img src={friend?.profilePic} alt="profile" className="w-full h-full object-cover"/>
                   </div>
-                  <span>{friend.username}</span>
+                  <span className="dark:text-white">{friend.username}</span>
                 </div>
                 {
                   !user?.data.friends.includes(friend._id) ? 
@@ -122,7 +122,7 @@ const Home = () => {
           </div>
           </>
           
-          <h3 className="text-xl text-slate-500 flex items-center group justify-between border p-2 py-3 rounded-lg cursor-pointer hover:shadow-sm">
+          <h3 onClick={()=>navigate('myrecipes')} className="text-xl text-slate-500 flex items-center group justify-between border p-2 py-3 rounded-lg cursor-pointer hover:shadow-sm">
             <span className="group-hover:scale-[1.07] transition-all duration-200 ease-linear">My Recipes </span>
             <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yb/r/eECk3ceTaHJ.png" alt="feed" className="group-hover:scale-[1.07] transition-all duration-200 ease-linear" />
           </h3>
@@ -131,7 +131,7 @@ const Home = () => {
               <span className="group-hover:scale-[1.07] transition-all duration-200 ease-linear">My Favourites </span>
               <FaHeart className="text-red-500 group-hover:scale-[1.07] transition-all duration-200 ease-linear" size={25}/>
             </h3>
-         
+            
           
         </div>
 
@@ -193,7 +193,7 @@ const Home = () => {
                       <h3 className="text-lg font-[400] dark:text-white">{recipe.userId?.username}</h3>
                       <span className="text-xs text-slate-500">{format(new Date(recipe?.createdAt), 'MMMM d, yyyy h:mm a')}</span>
                     </div>
-                    <RxDotsHorizontal className="absolute right-5 top-0 hover:scale-[1.07] transition-all duration-200 ease-linear cursor-pointer" size={25}
+                    <RxDotsHorizontal className="absolute right-5 top-0 hover:scale-[1.07] transition-all duration-200 ease-linear cursor-pointer dark:text-white" size={25}
                      onClick={()=>recipe.userId?._id && handleShow(recipe.userId?._id,recipe._id)} />
                    
                     <div className={`absolute top-7 right-0 w-[150px] bg-slate-50 py-3 px-2 rounded-lg hover:shadow-md ${show && trackRecipe===recipe._id ? 'flex flex-col gap-1':'hidden'}`}>
@@ -212,7 +212,7 @@ const Home = () => {
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogCancel className="dark:text-white">Cancel</AlertDialogCancel>
                             <AlertDialogAction onClick={()=>handleDelete(recipe._id)}>Continue</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
@@ -245,7 +245,7 @@ const Home = () => {
             
           </div>
         </div>
-        <div className="w-1/4 h-1/2 rounded-lg p-2 space-y-2">
+        <div className="w-1/4 h-1/2 rounded-lg p-2 space-y-2 border">
           <h3 className="text-xl text-slate-500">Following Friends</h3>
           <div className="flex flex-col gap-2">
             {users?.data.map((friend, index) => (
@@ -254,7 +254,7 @@ const Home = () => {
                  <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
                       <img src={friend.profilePic} alt="profile" className="w-full h-full object-cover"/>
                 </div>
-                <span>{ friend.username}</span>
+                <span className="dark:text-white">{ friend.username}</span>
                 </div>
                
                 {
