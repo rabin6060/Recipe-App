@@ -8,7 +8,7 @@ export interface Recipe {
   images?:string[] | undefined,
   video?:string | undefined,
   ingredients:string[],
-  categories:string[],
+  categories:string,
   instructions:Instruction[],
   comments?:ObjectId[],
   ratings?:ObjectId[],

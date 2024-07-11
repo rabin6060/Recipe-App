@@ -34,10 +34,10 @@ const recipeSchema = new mongoose.Schema<Recipe>(
         required:[true,'ingredients required']
     }],
    
-    categories:[{
+    categories:{
         type:String,
         required:[true,'categories required']
-    }],
+    },
     instructions:[{
       step:String,
       substep:[

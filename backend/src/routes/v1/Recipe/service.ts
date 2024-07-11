@@ -12,17 +12,18 @@ export const RecipeService = {
         return res
 
     },
-    async getAll(query:{title?:string,categories?:string,ingredients?:string,page:string,limit:string}){
+    async getAll(query:{title?:string,category?:string,ingredients?:string,page:string,limit:string}){
         let filter = {};
         let page = parseInt(query.page)
         let limit = parseInt(query.limit)
         let skip:number
         skip = (page-1)*limit
-        if (query.title || query.categories || query.ingredients) {
+        if (query.title || query.category || query.ingredients) {
           // Construct the filter object based on query parameters
+          console.log(query.category)
           filter = {
             ...(query.title && { title: new RegExp(query.title as string, 'i') }),
-            ...(query.categories && { items: { $in: (query.categories as string).split(',') } }),
+            ...(query.category && { categories: { $in: (query.category as string).split(',') } }),
             ...(query.ingredients && { ingredients: { $in: (query.ingredients as string).split(',') } }),
           };
         }
@@ -80,9 +81,7 @@ export const RecipeService = {
         doc.moveDown();
 
         doc.fontSize(16).fillColor('orange').text('Categories', { underline: true });
-        recipe.categories.forEach((category) => {
-            doc.fontSize(14).text(`- ${category}`);
-        });
+        doc.fontSize(14).text(`- ${recipe.categories}`);
         doc.moveDown();
 
         doc.fontSize(16).fillColor('red').text('Instructions', { underline: true });

@@ -41,15 +41,15 @@ export const RecipeController = {
     },
     async getAll(req:Request,res:Response,next:NextFunction){
       try {
-          const { title, categories, ingredients,page,limit } = req.query as {
+          const { title, category, ingredients,page,limit } = req.query as {
           title: string;
-          categories: string;
+          category: string;
           ingredients: string;
           page:string,
           limit:string
         };
 
-        const recipes = await RecipeService.getAll({ title, categories, ingredients,page,limit });
+        const recipes = await RecipeService.getAll({ title, category, ingredients,page,limit });
         if (!recipes) {
           return errorResponse({
             response: res,
