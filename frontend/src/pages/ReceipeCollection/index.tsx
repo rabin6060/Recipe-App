@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,12 +18,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { CiClock2 } from "react-icons/ci";
-import { getAllRecipe } from "@/api/recipe";
+import { downloadRecipe, getAllRecipe } from "@/api/recipe";
 import { Skeleton } from "@/components/ui/skeleton";
 import { editProfile } from "@/api/user";
 import { useUser } from "@/Context/UserContext";
 import axios from "axios";
 import { toast } from "sonner";
+import { MdDownloadForOffline } from "react-icons/md";
 
 const items = [
   {
@@ -35,8 +36,8 @@ const items = [
     label: "Vegan",
   },
   {
-    id: "non veg",
-    label: "Non Veg",
+    id: "nonveg",
+    label: "NonVeg",
   }
 ] as const;
 
@@ -65,7 +66,7 @@ const Recipe = () => {
   const fetch = async (page: number) => {
     try {
       
-      const response = await getAllRecipe(`limit=${limit}&page=${page}`);
+      const response = await getAllRecipe(`limit=${limit}&page=${page}&category=nonveg`);
       if (!response) {
         setLoading(false);
         return;
@@ -86,16 +87,19 @@ const Recipe = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      items: ["non veg"],
+      items: ["nonveg"],
       ingredients: '',
       title: ''
     },
   });
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    async function onSubmit(data: z.infer<typeof FormSchema>) {
+    // Set the default value for category if it's not provided
+    const category = data.items.length>0 ? data.items.join(',') : 'nonveg';
+    
     const query = new URLSearchParams({
       title: data.title,
-      category: data.items.join(','),
+      category: category,
       ingredients: data.ingredients
     }).toString();
 
@@ -137,7 +141,24 @@ const Recipe = () => {
      }
     }
   }
-   
+   const handleDownload = async(id:string) => {
+    try {
+      const response = await downloadRecipe(id); 
+      if (!response) {
+        throw new Error('Failed to download recipe');
+      }
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob)
+      const anchor = document.createElement('a');
+      anchor.href = blobUrl;
+      anchor.download = 'recipe.pdf';
+      anchor.click();
+
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Error downloading recipe:', error);
+    }
+}
     return (
         <section className="h-auto rounded-lg">
             <div className="h-full w-full grid grid-cols-4 "  >
@@ -258,6 +279,9 @@ const Recipe = () => {
                             <div className=" w-auto bg-white p-2 rounded-full absolute top-2 left-2 flex gap-2">
                               <CiClock2 className="text-red-500 text-2xl font-bold" />
                               <span className="dark:text-black">{recipe.cookingPeriod}</span>
+                            </div>
+                            <div className="w-auto p-2 rounded-full absolute top-1 right-2 flex gap-2">
+                              <MdDownloadForOffline className="text-white hover:text-blue-500 transition-all duration-150 ease-linear" size={40} onClick={()=>handleDownload(recipe._id)}/>
                             </div>
                             <div className="flex px-2">
                                 <div className="w-full flex items-center justify-between">
