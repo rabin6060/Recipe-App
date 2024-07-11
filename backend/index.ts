@@ -78,6 +78,23 @@ let io: Server;
     socket.on('register', (userId) => {
       users[userId] = socket.id;
     });
+
+  socket.on('chat', (message) => {
+    console.log(message);
+    const { toUserId, fromUserId, fromUser, content } = message;
+    const time = new Date().toISOString(); // Generate the current time on the server
+    const socketId = users[toUserId];
+    
+    if (socketId) {
+      io.to(socketId).emit('chat', { fromUser, fromUserId, time, content });
+    }
+
+    sendMessageToUser(toUserId, {
+      username: fromUser,
+      time,
+      content: `${fromUser} sent you a message`
+    });
+  });
     
     socket.on('disconnect', () => {
       for (const [userId, socketId] of Object.entries(users)) {
