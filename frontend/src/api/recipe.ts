@@ -28,6 +28,12 @@ export const getAllRecipe = (query:string) => {
     return axiosInstance.get(`/recipe?${query}`)
 }
 
+export const downloadRecipe = (id:string) => {
+    return axiosInstance.get(`/recipe/${id}/download`,{
+        responseType:'blob'
+    })
+}
+
 export const updateRecipe = (id:string,values:any) => {
     return axiosInstance.patch(`/recipe/${id}`,values)
 }
