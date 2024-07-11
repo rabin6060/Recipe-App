@@ -71,7 +71,6 @@ const Navbar = () => {
       socket.emit("chat", newChatMessage);
     }
   };
-  console.log(chats && chats.filter(chat=>chat.toUserId!==user?.data._id).length)
   return (
     <section className="h-auto w-full shadow-lg fixed top-0 z-50 bg-white dark:bg-black">
       <div className="max-w-[75%] mx-auto relative h-full py-3 flex items-center justify-between border-b-[1px] dark:border-white">
@@ -101,7 +100,7 @@ const Navbar = () => {
                   <div className="w-[90%] flex flex-col">
                     <h4 className="text-lg flex flex-col">
                       {notification.username}{" "}
-                      <span className="text-slate-500 text-sm">
+                      <span className="text-slate-500 text-xs">
                         {format(
                           new Date(notification?.time),
                           "MMMM d,  h:mm a"
@@ -168,7 +167,7 @@ const Navbar = () => {
                             <span>{friend.username}</span>
                           </div>
                           
-                          <span className="w-[24px] h-[24px] text-sm bg-red-500 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black font-semibold">{ chats && chats.filter(chat=>chat.fromUserId===friend._id).length}</span>
+                          <span className={`w-[24px] h-[24px] text-sm bg-red-500 dark:bg-white rounded-full items-center justify-center text-white dark:text-black font-semibold ${chats && chats.filter(chat=>chat.fromUserId===friend._id).length > 0 ? 'flex' :'hidden'}`}>{ chats && chats.filter(chat=>chat.fromUserId===friend._id).length}</span>
                         </div>
                       </div>
                     ))}
@@ -215,7 +214,7 @@ const Navbar = () => {
                                 key={chat.time}
                                 className={`m-1 flex flex-col ${
                                   chat.fromUserId !== user?.data._id
-                                    ? "items-start"
+                                    ? "items-start "
                                     : "items-end"
                                 }`}
                               >
@@ -225,7 +224,11 @@ const Navbar = () => {
                                   ) && (
                                   <>
                                     <p
-                                      className={`bg-blue-500 p-2 font-semibold break-words rounded-lg text-white`}
+                                      className={`${
+                                        chat.fromUserId !== user?.data._id
+                                          ? "bg-teal-500 "
+                                          : "bg-blue-500"
+                                      } p-2 font-semibold break-words rounded-lg text-white`}
                                     >
                                       {chat.content}
                                     </p>
@@ -257,7 +260,7 @@ const Navbar = () => {
                 </div>
               )}
 
-              <div className="w-[24px] h-[24px] text-sm bg-red-500 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black font-semibold absolute -top-3 -right-2">
+              <div className={`w-[24px] h-[24px] text-sm bg-red-500 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black font-semibold absolute -top-3 -right-2 ${chats && chats.filter(chat=>chat.fromUserId!==user?.data._id).length>0 ? 'flex':'hidden' }`}>
                 {
                   chats && chats.filter(chat=>chat.fromUserId!==user?.data._id).length
                 }
@@ -302,7 +305,7 @@ const Navbar = () => {
                   setIsHovered(false);
                 }}
               >
-                <div className="hover:scale-[1.03] transition-all duration-200">
+                <div className="hover:scale-[1.03] transition-all duration-200 dark:text-white">
                   {user && user?.data?.username}
                 </div>
                 <div className="w-[30px] h-[30px] rounded-full overflow-hidden">
