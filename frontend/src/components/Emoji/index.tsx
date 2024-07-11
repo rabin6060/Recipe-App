@@ -60,10 +60,10 @@ const EmojiInput: React.FC<EmojiInputProps> = ({recipeId,setTrackComment}) => {
                     className='border-none'
                     placeholder='add a comment...'
                 />
-            <MdOutlineEmojiEmotions onClick={() => setShowPicker(val => !val)} fontSize={30} className='text-blue-500 cursor-pointer relative'/>
+            <MdOutlineEmojiEmotions onClick={() => setShowPicker(val => !val)} fontSize={30} className='text-blue-500 cursor-pointer'/>
             <IoSend fontSize={30} className='text-blue-500 cursor-pointer mx-2' onClick={handleComment}/>
         </div>
-        <div className='absolute bottom-20 right-0'>
+        <div className='fixed bottom-16 right-60'>
             {showPicker && <EmojiPicker onEmojiClick={handleEmojiClick} />}
         </div>
      
