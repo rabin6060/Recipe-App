@@ -144,11 +144,11 @@ const RecipeDetail = () => {
     }
   }
   return (
-    <section className="h-auto rounded-lg p-2 my-2">
-      {recipe && <div className="w-full h-full space-y-10">
+    <section className=" rounded-lg pt-2 mt-2 pb-10">
+      <div className="w-full h-full space-y-10">
         {/* image section*/}
-        <div className="h-auto grid grid-cols-2 gap-2 mb-2">
-          <div className="col-span-1 w-full h-[500px] overflow-hidden">
+        <div className=" grid grid-cols-2 gap-2 mb-2">
+          <div className="col-span-1 w-full h-[500px] rounded-lg overflow-hidden">
             <img
               src={recipe && recipe?.images[0]}
               alt="image"
@@ -157,7 +157,7 @@ const RecipeDetail = () => {
           </div>
           <div className="grid grid-cols-2 col-span-1 h-[500px] gap-2">
             {recipe?.images.slice(1).map((image, index) => (
-              <div key={index} className="col-span-1 h-full overflow-hidden ">
+              <div key={index} className="col-span-1 h-full rounded-lg overflow-hidden ">
                 <img
                   src={image}
                   alt="image"
@@ -168,7 +168,7 @@ const RecipeDetail = () => {
           </div>
         </div>
         {/* ingridients section*/}
-        <div className="h-auto grid grid-cols-3 gap-2">
+        <div className=" grid grid-cols-3 gap-2">
           <div className="space-y-3 h-1/2 rounded-lg col-span-1 cursor-pointer">
             <h3 className="text-2xl dark:text-white">MOMO</h3>
             <div className="w-full shadow-sm hover:shadow-md  duration-200 ease-linear  p-2">
@@ -182,12 +182,11 @@ const RecipeDetail = () => {
             </div>
             <div className="w-full shadow-sm hover:shadow-md  duration-200 ease-linear  p-2">
               <h4 className="text-lg dark:text-white">Category</h4>
-              {recipe?.categories?.map((category, index) => (
-                <div className="flex gap-1 items-center" key={index}>
+              
+              <div className="flex gap-1 items-center">
                   <IoMdFlower className="rotate-90 text-xl text-red-500" />
-                  <p className="text-sm text-slate-500"> {category}</p>
+                  <p className="text-sm text-slate-500"> {recipe?.categories}</p>
                 </div>
-              ))}
             </div>
           </div>
           {/* steps section*/}
@@ -222,7 +221,7 @@ const RecipeDetail = () => {
           </div>
         </div>
         {/* video section*/}
-        <div className="h-[80vh] mt-10">
+        <div className="h-[500px] mt-10">
           <h3 className="text-3xl mb-10 dark:text-white">Watch Video</h3>
           <div className="h-[90%] w-full mx-auto bg-inherit">
             <iframe
@@ -236,7 +235,7 @@ const RecipeDetail = () => {
           </div>
         </div>
         {/* rating and comment section*/}
-        <div className="h-[60vh] grid grid-cols-2 gap-2 dark:text-white">
+        <div className=" grid grid-cols-2 gap-2 dark:text-white">
           <div className="col-span-1 h-auto rounded-lg p-2 space-y-5">
             <div className="h-auto shadow-sm p-1 space-y-3">
               <h3 className="text-3xl ">Overall Ratings</h3>
@@ -271,7 +270,7 @@ const RecipeDetail = () => {
               </div>
             </div>
             <h3 className="text-2xl">Rate Out of Five</h3>
-            <div className="w-[65%] flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200 ease-linear cursor-pointer rounded-full p-2">
+            <div className="w-[65%] flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200 ease-linear cursor-pointer rounded-full dark:bg-black p-2">
               <div className="flex items-center justify-between dark:bg-inherit w-[95%] py-2 px-5 rounded-full">
                 {[...Array(5)].map((_, index) => (
                   <FaStar
@@ -290,7 +289,7 @@ const RecipeDetail = () => {
                 onClick={handleRating}
               />
             </div>
-            <div className="h-[50vh] w-[63.6%] overflow-y-auto space-y-4">
+            <div className="h-[30vh] w-[63.6%] overflow-y-auto space-y-4">
               {recipe?.ratings.map((rating) => (
                 <div key={rating._id} className=" p-2 flex items-center gap-5 cursor-pointer rounded-lg shadow-sm hover:shadow-md  duration-200 ease-linear dark:bg-inherit">
                   <Avatars />
@@ -318,7 +317,7 @@ const RecipeDetail = () => {
               ))}
             </div>
           </div>
-          <div className="col-span-1 rounded-lg flex flex-col gap-2 dark:text-white">
+          <div className="col-span-1 rounded-lg flex flex-col gap-2 pt-4 dark:text-white">
             <h3 className="text-2xl">Add a Comment</h3>
             <EmojiInput recipeId={recipe && recipe?._id} setTrackComment={setTrackComment}/>
             <div className="w-full h-[90%] rounded-lg p-2 space-y-2 overflow-y-auto">
@@ -348,7 +347,7 @@ const RecipeDetail = () => {
             </div>
           </div>
         </div>
-      </div>}
+      </div>
     </section>
   );
 };
