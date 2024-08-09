@@ -14,6 +14,7 @@ import { create, delete_Comment_Rating } from "@/api/comment";
 import { useRecipe } from "@/Context/RecipeContext";
 import { MdDelete } from "react-icons/md";
 
+
 const RecipeDetail = () => {
   const [stars, setStars] = useState(0);
   const [averageRating, setAverageRating] = useState(0);

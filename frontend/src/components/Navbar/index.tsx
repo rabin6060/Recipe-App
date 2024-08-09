@@ -71,6 +71,7 @@ const Navbar = () => {
       socket.emit("chat", newChatMessage);
     }
   };
+  
   return (
     <section className="h-auto w-full shadow-lg fixed top-0 z-50 bg-white dark:bg-black">
       <div className="max-w-[75%] mx-auto relative h-full py-3 flex items-center justify-between border-b-[1px] dark:border-white">
@@ -135,7 +136,7 @@ const Navbar = () => {
                   setChat(false);
                   setIsHovered((prev) => !prev);
                   setNotification(false);
-                  setShow(false);
+                  
                 }}
               />
               {ishovered && (
@@ -153,6 +154,7 @@ const Navbar = () => {
                         onClick={() => {
                           setChat((prev) => !prev);
                           setCurrentUser(friend._id);
+                          setIsHovered(false)
                         }}
                       >
                         <div className="flex w-full items-center justify-between">
@@ -171,7 +173,12 @@ const Navbar = () => {
                         </div>
                       </div>
                     ))}
-                    {currentUser && chat && (
+                   
+                  </div>
+                   
+                </div>
+              )}
+              {currentUser && chat && (
                       <div
                         className={`h-[60vh] w-1/4 border rounded-lg fixed bottom-0 right-[15rem] shadow-md bg-white z-50 transition-transform duration-300 ease-linear rounded-t-lg space-y-2 dark:bg-slate-50 transform ${
                           currentUser ? "opacity-100" : "opacity-0"
@@ -256,9 +263,6 @@ const Navbar = () => {
                         </form>
                       </div>
                     )}
-                  </div>
-                </div>
-              )}
 
               <div className={`w-[24px] h-[24px] text-sm bg-red-500 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black font-semibold absolute -top-3 -right-2 ${chats && chats.filter(chat=>chat.fromUserId!==user?.data._id).length>0 ? 'flex':'hidden' }`}>
                 {

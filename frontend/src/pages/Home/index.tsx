@@ -93,10 +93,10 @@ const Home = () => {
     <section className="h-auto">
       <div className="flex h-full gap-5">
         {/* Sidebar */}
-        <div className="w-1/5 h-1/2 rounded-lg p-2 space-y-4 border">
+        <div className="w-1/5 h-1/2 rounded-lg p-2 space-y-4 ">
           <>
           <h3 className="text-xl text-slate-500">Follow Friends</h3>
-          <div className="flex flex-col gap-3 h-[35vh] overflow-y-auto rounded-lg border">
+          <div className="flex flex-col gap-3 h-[35vh] overflow-y-auto rounded-lg ">
             {verifiedUsers && verifiedUsers?.filter(u=>u?._id!==user?.data?._id).map((friend, index) => (
                <div key={index} className={`flex items-center justify-between border-b cursor-pointer gap-2 p-1   ${!user?.data.friends.includes(friend._id) ? 'flex':'hidden'}`}>
                 <div className="flex items-center gap-2 p-1">
@@ -245,7 +245,7 @@ const Home = () => {
             
           </div>
         </div>
-        <div className="w-1/4 h-1/2 rounded-lg p-2 space-y-2 border">
+        <div className="w-1/4 h-1/2 rounded-lg p-2 space-y-2">
           <h3 className="text-xl text-slate-500">Following Friends</h3>
           <div className="flex flex-col gap-2">
             {users?.data.map((friend, index) => (
